@@ -24,8 +24,9 @@ sudo qm set $VMID --scsi1 $STORAGE:cloudinit
 cat << EOF | sudo tee /var/lib/vz/snippets/debian-12-docker.yaml
 #cloud-config
 runcmd:
+    - systemctl disable --now systemd-resolved
     - apt-get update
-    - apt-get install -y qemu-guest-agent gnupg fish bat fzf fd-find git npm rustc gcc python3-pip python3-venv unzip
+    - apt-get install -y qemu-guest-agent gnupg fish bat fzf fd-find git npm rustc gcc python3-pip python3-venv unzip tmux
     - ln -s /usr/bin/batcat /usr/bin/bat
     - systemctl start qemu-guest-agent
     - wget "https://github.com/neovim/neovim/releases/download/v0.11.2/nvim-linux-x86_64.tar.gz" -O /opt/nvim.tar.gz
@@ -44,7 +45,6 @@ runcmd:
     - cp -r /root/DotFiles/nvim /root/.config
     - rm -rf /root/DotFiles
 # Taken from https://forum.proxmox.com/threads/combining-custom-cloud-init-with-auto-generated.59008/page-3#post-428772
-
 EOF
 
 sudo qm set $VMID --cicustom "vendor=local:snippets/debian-12-docker.yaml"
